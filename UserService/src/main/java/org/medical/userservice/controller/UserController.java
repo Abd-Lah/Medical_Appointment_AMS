@@ -9,7 +9,9 @@ import org.medical.userservice.model.UserEntity;
 import org.medical.userservice.service.UserService;
 import org.medical.userservice.service.factory.UserRoleMapperFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,12 @@ public class UserController {
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String specialization,
-            Pageable pageable) {
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "firstName,asc") String sort
+            ) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sort.split(",")[0])));
 
         Page<UserEntity> usersPage = userService.getAllDoctors(firstName, lastName, city, specialization, pageable);
 

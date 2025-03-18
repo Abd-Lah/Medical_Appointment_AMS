@@ -3,14 +3,13 @@ package org.medical.userservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.medical.userservice.dto.request.DoctorProfileRequest;
 
 @Entity
 @Table(name = "doctor_profiles")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorProfileEntity extends BaseEntity{

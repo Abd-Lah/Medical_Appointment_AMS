@@ -1,8 +1,6 @@
 package org.medical.userservice.repository;
 
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import org.medical.userservice.model.DoctorProfileEntity;
 import org.medical.userservice.model.RoleEnum;
 import org.medical.userservice.model.UserEntity;
@@ -25,8 +23,10 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
         return findAll((root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            // Join with DoctorProfileEntity
             Join<UserEntity, DoctorProfileEntity> doctorProfileJoin = root.join("doctorProfile", JoinType.INNER);
 
+            // Add filtering conditions
             if (firstName != null && !firstName.isEmpty()) {
                 predicates.add(builder.like(builder.lower(root.get("firstName")), "%" + firstName.toLowerCase() + "%"));
             }
@@ -43,10 +43,34 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
                 predicates.add(builder.like(builder.lower(doctorProfileJoin.get("specialty")), "%" + specialization.toLowerCase() + "%"));
             }
 
+            // Add role filter (assuming the role is stored in the UserEntity)
             predicates.add(builder.equal(root.get("role"), RoleEnum.DOCTOR));
 
-            return builder.and(predicates.toArray(new Predicate[0]));
+            predicates.add(builder.equal(root.get("active"), true));
+
+            predicates.add(builder.equal(root.get("deleted"), false));
+
+
+            // Apply the predicates to the query
+            query.where(builder.and(predicates.toArray(new Predicate[0])));
+
+            // Apply sorting from Pageable
+            pageable.getSort();
+            List<Order> orders = new ArrayList<>();
+            pageable.getSort().forEach(order -> {
+                Path<Object> path = root.get(order.getProperty());
+                if (order.isAscending()) {
+                    orders.add(builder.asc(path));
+                } else {
+                    orders.add(builder.desc(path));
+                }
+            });
+            query.orderBy(orders);
+
+            // Return the query
+            return query.getRestriction();
         }, pageable);
     }
+
 
 }

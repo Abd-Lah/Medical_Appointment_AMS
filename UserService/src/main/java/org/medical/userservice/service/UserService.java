@@ -1,6 +1,5 @@
 package org.medical.userservice.service;
 
-import org.medical.userservice.dto.request.DoctorProfileRequest;
 import org.medical.userservice.dto.request.RegisterRequest;
 import org.medical.userservice.dto.request.UserRequest;
 import org.medical.userservice.model.UserEntity;
