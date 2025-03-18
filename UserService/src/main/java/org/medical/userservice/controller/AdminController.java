@@ -37,7 +37,7 @@ public class AdminController {
         return ResponseEntity.ok(mappedPage);
     }
 
-    @GetMapping("/all_doctors")
+    @GetMapping("/doctor/all")
     public ResponseEntity<Page<DoctorDtoResponse>> doctor(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
