@@ -17,17 +17,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final UserRoleMapperFactory userRoleMapperFactory;
 
 
-
-
-
-    @GetMapping("/doctor/all")
+    @GetMapping("/doctors")
     public ResponseEntity<Page<DoctorDtoResponse>> doctor(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
@@ -52,27 +49,33 @@ public class UserController {
         return new ResponseEntity<>(DoctorMapper.INSTANCE.toDto(user), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/user/create")
+    @PostMapping(path = "/create")
     public ResponseEntity<?> createUser(@RequestBody RegisterRequest userRequest) {
         UserEntity user = userService.createUser(userRequest);
         Object dto = userRoleMapperFactory.getMapper(user.getRole(), user);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/user/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
 
-        UserEntity updatedUser = userService.updateProfile(id, userRequest);
+        UserEntity updatedUser = userService.update(id, userRequest);
 
         Object dto = userRoleMapperFactory.getMapper(updatedUser.getRole(), updatedUser);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/user/delete/{id}")
+    @PatchMapping(path = "/delete/{id}")
     public ResponseEntity<String> deleteAccount(@PathVariable String id) {
         userService.deleteAccount(id);
         return new ResponseEntity<>("Your account was deleted successfully",HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/activate/{id}")
+    public ResponseEntity<String> activateAccount(@PathVariable String id) {
+        userService.activateAccount(id);
+        return new ResponseEntity<>("Your account was activated successfully",HttpStatus.OK);
     }
 
 

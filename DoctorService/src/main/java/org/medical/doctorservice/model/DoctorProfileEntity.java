@@ -1,10 +1,9 @@
-package org.medical.userservice.model;
+package org.medical.doctorservice.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.medical.userservice.dto.request.DoctorProfileRequest;
+import org.medical.doctorservice.dto.request.DoctorProfileRequest;
 
 @Entity
 @Table(name = "doctor_profiles")
@@ -13,10 +12,8 @@ import org.medical.userservice.dto.request.DoctorProfileRequest;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorProfileEntity extends BaseEntity{
-    @OneToOne
-    @JoinColumn(name = "doctor_id", nullable = false, unique = true)
-    @JsonIgnore
-    private UserEntity doctor;
+    @Column(name = "doctor_id" ,unique = true)
+    private String doctorId ;
 
     @Column(columnDefinition = "TEXT")
     private String bio;
@@ -49,8 +46,19 @@ public class DoctorProfileEntity extends BaseEntity{
     @Column(nullable = false, name = "end_time")
     private String endTime = "22:00";
 
-    public DoctorProfileEntity(UserEntity user) {
-        this.doctor = user;
+    public DoctorProfileEntity(DoctorProfileRequest request) {
+        this.doctorId = request.getDoctorId();
+        this.bio = request.getBio();
+        this.experience = request.getExperience();
+        this.qualifications = request.getQualifications();
+        this.clinicAddress = request.getClinicAddress();
+        this.specialty = request.getSpecialty();
+        this.appointmentDuration = request.getAppointmentDuration();
+        this.workingDays = request.getWorkingDays();
+        this.startTime = request.getStartTime();
+        this.breakTimeStart = request.getBreakTimeStart();
+        this.breakTimeEnd = request.getBreakTimeEnd();
+        this.endTime = request.getEndTime();
     }
 
     public DoctorProfileEntity updateDoctorProfile(DoctorProfileRequest p) {

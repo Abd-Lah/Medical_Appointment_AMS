@@ -11,16 +11,15 @@ import org.springframework.data.domain.PageImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(uses = DoctorProfileMapper.class) // Ensure DoctorProfileMapper is used for nested mapping
+@Mapper  (uses = DoctorProfileMapper.class)// Ensure DoctorProfileMapper is used for nested mapping
 public interface DoctorMapper extends UserMapper {
     DoctorMapper INSTANCE = Mappers.getMapper(DoctorMapper.class);
 
     @Override
-    @Mapping(target = "doctorProfileDto", source = "doctorProfile")
+    @Mapping(target = "doctorProfileDto", source = "doctorProfile") // Map the doctorProfile from UserEntity to DoctorDtoResponse
     DoctorDtoResponse toDto(UserEntity userEntity);
 
     @Override
-    @Mapping(target = "doctorProfileDto", source = "doctorProfile")
     default Page<DoctorDtoResponse> toDtoPage(Page<UserEntity> userEntitiesPage) {
         List<DoctorDtoResponse> doctorDtos = userEntitiesPage.getContent().stream()
                 .map(this::toDto)

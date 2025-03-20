@@ -11,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DoctorProfileRequest {
 
+    private String doctorId;
+
     private String bio;
 
     private String experience;

@@ -1,14 +1,18 @@
-package org.medical.userservice.dto.response;
+package org.medical.doctorservice.dto.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.medical.doctorservice.model.DoctorProfileEntity;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorProfileDtoResponse {
+public class DoctorProfileRequest {
 
-    private String id;
+    private String doctorId;
 
     private String bio;
 
@@ -31,4 +35,8 @@ public class DoctorProfileDtoResponse {
     private String breakTimeEnd ;
 
     private String endTime ;
+
+    public DoctorProfileEntity createProfile() {
+        return new DoctorProfileEntity(this);
+    }
 }

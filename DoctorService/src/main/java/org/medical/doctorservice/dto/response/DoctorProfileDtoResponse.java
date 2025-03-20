@@ -1,4 +1,4 @@
-package org.medical.userservice.dto.response;
+package org.medical.doctorservice.dto.response;
 
 import lombok.*;
 

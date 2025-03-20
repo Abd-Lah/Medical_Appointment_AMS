@@ -1,6 +1,6 @@
 spring:
   application:
-    name: User-Service
+    name: Doctor-Service
 
   cloud:
     config:
@@ -10,7 +10,7 @@ spring:
 
   datasource:
     username: postgres
-    url: jdbc:postgresql://localhost:5432/users_db
+    url: jdbc:postgresql://localhost:5432/doctor_profile_db
     password: password
 
   jpa:
@@ -36,4 +36,4 @@ management:
         include:
 
 server:
-  port: 8081
+  port: 8082

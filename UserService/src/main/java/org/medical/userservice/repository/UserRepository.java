@@ -1,7 +1,6 @@
 package org.medical.userservice.repository;
 
 import jakarta.persistence.criteria.*;
-import org.medical.userservice.model.DoctorProfileEntity;
 import org.medical.userservice.model.RoleEnum;
 import org.medical.userservice.model.UserEntity;
 import org.springframework.data.domain.Page;
@@ -17,16 +16,11 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
     UserEntity findByEmail(String email);
 
-    Page<UserEntity> findUsersByRole(RoleEnum role, Pageable pageable);
-
-    default Page<UserEntity> getDoctors(String firstName, String lastName, String city, String specialization, Pageable pageable) {
+    default Page<UserEntity> getDoctorsBySpec(String firstName, String lastName, String city, Pageable pageable) {
         return findAll((root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Join with DoctorProfileEntity
-            Join<UserEntity, DoctorProfileEntity> doctorProfileJoin = root.join("doctorProfile", JoinType.INNER);
-
-            // Add filtering conditions
+            // Add filtering conditions for firstName, lastName, and city
             if (firstName != null && !firstName.isEmpty()) {
                 predicates.add(builder.like(builder.lower(root.get("firstName")), "%" + firstName.toLowerCase() + "%"));
             }
@@ -39,17 +33,12 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
                 predicates.add(builder.like(builder.lower(root.get("city")), "%" + city.toLowerCase() + "%"));
             }
 
-            if (specialization != null && !specialization.isEmpty()) {
-                predicates.add(builder.like(builder.lower(doctorProfileJoin.get("specialty")), "%" + specialization.toLowerCase() + "%"));
-            }
-
-            // Add role filter (assuming the role is stored in the UserEntity)
+            // Add role filter (only doctors)
             predicates.add(builder.equal(root.get("role"), RoleEnum.DOCTOR));
 
+            // Filter for active and non-deleted users
             predicates.add(builder.equal(root.get("active"), true));
-
             predicates.add(builder.equal(root.get("deleted"), false));
-
 
             // Apply the predicates to the query
             query.where(builder.and(predicates.toArray(new Predicate[0])));
@@ -71,6 +60,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
             return query.getRestriction();
         }, pageable);
     }
+
 
 
 }

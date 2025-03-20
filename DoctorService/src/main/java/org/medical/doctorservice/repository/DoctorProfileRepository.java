@@ -1,11 +1,10 @@
-package org.medical.userservice.repository;
+package org.medical.doctorservice.repository;
 
-import org.medical.userservice.model.DoctorProfileEntity;
-import org.medical.userservice.model.UserEntity;
+import org.medical.doctorservice.model.DoctorProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DoctorProfileRepository extends JpaRepository<DoctorProfileEntity, String> {
-    DoctorProfileEntity getDoctorProfileByDoctor(UserEntity user);
+    DoctorProfileEntity getDoctorProfileByDoctorId(String id);
 }
