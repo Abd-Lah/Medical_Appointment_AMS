@@ -4,6 +4,7 @@ package org.medical.userservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.medical.userservice.dto.request.UserRequest;
+import org.medical.userservice.dto.response.DoctorProfileDtoResponse;
 
 @Entity
 @Table(name = "users")
@@ -12,8 +13,9 @@ import org.medical.userservice.dto.request.UserRequest;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends BaseEntity {
-    @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private DoctorProfileEntity doctorProfile;
+
+    @Transient
+    private DoctorProfileDtoResponse doctorProfile;
 
     @Column(unique=true, nullable=false)
     private String email;

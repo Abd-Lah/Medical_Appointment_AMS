@@ -9,11 +9,13 @@ import org.springframework.data.domain.Pageable;
 public interface UserService {
     UserEntity createUser(RegisterRequest userRequest);
 
-    UserEntity updateProfile(String userId, UserRequest userRequest);
+    UserEntity update(String userId, UserRequest userRequest);
 
-    boolean deleteAccount(String id);
+    void deleteAccount(String id);
 
     Page<UserEntity> getAllDoctors(String firstName, String lastName, String city, String specialization, Pageable pageable);
 
     UserEntity getDoctor(String id);
+
+    void activateAccount(String id);
 }

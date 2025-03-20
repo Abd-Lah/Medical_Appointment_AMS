@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 public class DoctorProfileDtoResponse {
 
+    private String id;
+
     private String bio;
 
     private String experience;

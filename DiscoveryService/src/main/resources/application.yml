@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: DiscoveryService
+
+eureka:
+  server:
+    enable-self-preservation: true  # Enable self-preservation to protect from accidental instance expiry
+    eviction-interval-timer-in-ms: 60000  # The interval at which Eureka checks for expired instances (1 minute)
+
+  client:
+    fetch-registry: false  # Prevents fetching registry from Eureka
+    register-with-eureka: false  # Prevents registering with Eureka
+
+server:
+  port: 8761  # Eureka server port

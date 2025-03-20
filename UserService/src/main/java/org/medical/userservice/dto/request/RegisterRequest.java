@@ -14,6 +14,7 @@ public class RegisterRequest {
     private String phoneNumber;
     private String city;
     private RoleEnum role;
+    private DoctorProfileRequest doctorProfile;
 
     public UserEntity toUserEntity() {
         return new UserEntity(
