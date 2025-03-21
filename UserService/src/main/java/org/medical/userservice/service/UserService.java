@@ -17,5 +17,9 @@ public interface UserService {
 
     UserEntity getDoctor(String id);
 
+    Page<UserEntity> getAllPatients(String firstName, String lastName, String city, Pageable pageable);
+
+    UserEntity getPatient(String id);
+
     void activateAccount(String id);
 }

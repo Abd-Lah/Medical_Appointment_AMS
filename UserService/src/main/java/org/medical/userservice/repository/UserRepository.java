@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
     UserEntity findByEmail(String email);
 
-    default Page<UserEntity> getDoctorsBySpec(String firstName, String lastName, String city, Pageable pageable) {
+    default Page<UserEntity> getUsersBySpec(String firstName, String lastName, String city ,RoleEnum role, Pageable pageable) {
         return findAll((root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -33,10 +35,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
                 predicates.add(builder.like(builder.lower(root.get("city")), "%" + city.toLowerCase() + "%"));
             }
 
-            // Add role filter (only doctors)
-            predicates.add(builder.equal(root.get("role"), RoleEnum.DOCTOR));
-
             // Filter for active and non-deleted users
+            predicates.add(builder.equal(root.get("role"), role));
             predicates.add(builder.equal(root.get("active"), true));
             predicates.add(builder.equal(root.get("deleted"), false));
 
@@ -61,6 +61,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
         }, pageable);
     }
 
-
-
+    @Query("SELECT u FROM UserEntity u WHERE u.role = 'patient' AND u.id = :id")
+    UserEntity getPatient(@Param("id") String id);
 }

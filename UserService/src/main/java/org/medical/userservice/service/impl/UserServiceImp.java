@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Page<UserEntity> getAllDoctors(String firstName, String lastName, String city, String specialization, Pageable pageable) {
-        return getDoctors(firstName, lastName, city, specialization, pageable);
+        return filterUsers(firstName, lastName, city, specialization, RoleEnum.DOCTOR, pageable);
     }
 
     @Override
@@ -78,6 +78,18 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Page<UserEntity> getAllPatients(String firstName, String lastName, String city, Pageable pageable) {
+        return getUsers(firstName, lastName, city, RoleEnum.PATIENT, pageable);
+    }
+
+    @Override
+    public UserEntity getPatient(String id) {
+        UserEntity patient = userRepository.getPatient(id);
+        helper.isObjectNull(patient, "Patient not found");
+        return patient;
+    }
+
+    @Override
     public void activateAccount(String id) {
         UserEntity user = getUserById(id);
         helper.isObjectNull(user, "User not found");
@@ -103,32 +115,43 @@ public class UserServiceImp implements UserService {
         return null;
     }
 
-    private Page<UserEntity> getDoctors(String firstName, String lastName, String city, String specialization, Pageable pageable) {
-        // Step 1: Fetch doctors using the specification from UserRepository
-        Page<UserEntity> doctors = userRepository.getDoctorsBySpec(firstName, lastName, city, pageable);
+    private Page<UserEntity> getUsers(String firstName, String lastName, String city,RoleEnum role, Pageable pageable) {
+        return userRepository.getUsersBySpec(firstName, lastName, city,role, pageable);
+    }
 
-        // Step 2: Fetch specialization for each doctor and filter by specialization
-        List<UserEntity> filteredDoctors = new ArrayList<>();
+    private Page<UserEntity> filterUsers(String firstName, String lastName, String city, String specialization, RoleEnum role, Pageable pageable) {
+        // Get the initial page of users based on the provided filters
+        Page<UserEntity> users = getUsers(firstName, lastName, city, role, pageable);
 
-        for (UserEntity doctor : doctors.getContent()) {
-            // Fetch the doctor profile to get specialization
-            DoctorProfileDtoResponse doctorProfile = doctorServiceClient.getDoctorProfile(doctor.getId());
+        // Only filter if the role is DOCTOR and specialization is provided
+        if (role == RoleEnum.DOCTOR) {
+            List<UserEntity> filteredDoctors = new ArrayList<>();
 
-            // If specialization is not specified, add all doctors
-            if (specialization == null || specialization.isEmpty()) {
-                doctor.setDoctorProfile(doctorProfile);
-                filteredDoctors.add(doctor);
-            } else {
-                // Filter by specialization if it matches
-                if (doctorProfile != null && doctorProfile.getSpecialty() != null &&
-                        doctorProfile.getSpecialty().toLowerCase().contains(specialization.toLowerCase())) {
-                    doctor.setDoctorProfile(doctorProfile);
-                    filteredDoctors.add(doctor);
+            // Loop through the users and filter based on the specialization (if it's not null)
+            for (UserEntity doctor : users.getContent()) {
+                DoctorProfileDtoResponse doctorProfile = doctorServiceClient.getDoctorProfile(doctor.getId());
+
+                if (doctorProfile != null) {
+                    // If specialization is provided, filter based on it
+                    if (specialization != null && !specialization.isEmpty()) {
+                        if (doctorProfile.getSpecialty() != null && doctorProfile.getSpecialty().toLowerCase().contains(specialization.toLowerCase())) {
+                            doctor.setDoctorProfile(doctorProfile);
+                            filteredDoctors.add(doctor);
+                        }
+                    } else {
+                        // If specialization is null, add doctor to the list regardless of specialization
+                        doctor.setDoctorProfile(doctorProfile);
+                        filteredDoctors.add(doctor);
+                    }
                 }
             }
+
+            // Return the filtered list as a Page
+            return new PageImpl<>(filteredDoctors, pageable, filteredDoctors.size());
         }
 
-        // Step 3: Return a new page with the filtered list of doctors
-        return new PageImpl<>(filteredDoctors, pageable, filteredDoctors.size());
+        // Return all users if the role is not DOCTOR or if no filtering is needed
+        return users;
     }
+
 }

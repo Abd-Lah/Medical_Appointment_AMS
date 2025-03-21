@@ -26,18 +26,18 @@ public class DoctorController {
         return DoctorProfileMapper.INSTANCE.toDoctorProfileDto(doctorService.createProfile(request));
     }
 
-    @PutMapping(path = "profile/update/{id}")
+    @PutMapping(path = "/profile/update/{id}")
     public DoctorProfileDtoResponse updateDoctorProfile(@PathVariable String id, @RequestBody DoctorProfileRequest request){
         return DoctorProfileMapper.INSTANCE.toDoctorProfileDto(doctorService.updateProfile(id,request));
     }
 
-    @PatchMapping(path = "profile/delete/{id}")
+    @DeleteMapping(path = "/profile/delete/{id}")
     public ResponseEntity<Void> deleteDoctorProfile(@PathVariable String id) {
         doctorService.deleteProfile(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(path = "profile/activate/{id}")
+    @DeleteMapping(path = "/profile/activate/{id}")
     public ResponseEntity<Void> activateDoctorProfile(@PathVariable String id) {
         doctorService.activateProfile(id);
         return ResponseEntity.noContent().build();
