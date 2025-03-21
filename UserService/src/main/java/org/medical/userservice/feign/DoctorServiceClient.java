@@ -16,9 +16,9 @@ public interface DoctorServiceClient {
     @PutMapping(path = "api/doctors/profile/update/{id}")
     DoctorProfileDtoResponse updateDoctorProfile(@PathVariable("id") String id, @RequestBody DoctorProfileRequest request);
 
-    @PatchMapping(path = "/api/doctors/profile/delete/{id}")
+    @DeleteMapping(path = "/api/doctors/profile/delete/{id}")
     void deleteDoctorProfile(@PathVariable("id") String id);
 
-    @PatchMapping(path = "/api/doctors/profile/activate/{id}")
+    @DeleteMapping(path = "/api/doctors/profile/activate/{id}")
     void activateDoctorProfile(@PathVariable("id") String id);
 }

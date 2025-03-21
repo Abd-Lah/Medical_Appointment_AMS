@@ -2,9 +2,11 @@ package org.medical.userservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.medical.userservice.dto.mapper.DoctorMapper;
+import org.medical.userservice.dto.mapper.PatientMapper;
 import org.medical.userservice.dto.request.RegisterRequest;
 import org.medical.userservice.dto.request.UserRequest;
 import org.medical.userservice.dto.response.DoctorDtoResponse;
+import org.medical.userservice.dto.response.PatientDtoResponse;
 import org.medical.userservice.model.UserEntity;
 import org.medical.userservice.service.UserService;
 import org.medical.userservice.service.factory.UserRoleMapperFactory;
@@ -49,6 +51,30 @@ public class UserController {
         return new ResponseEntity<>(DoctorMapper.INSTANCE.toDto(user), HttpStatus.OK);
     }
 
+    @GetMapping("/patients")
+    public ResponseEntity<Page<PatientDtoResponse>> patient(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "createdAt,asc") String sort
+    ) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc(sort.split(",")[0])));
+
+        Page<UserEntity> usersPage = userService.getAllPatients(firstName, lastName, city, pageable);
+
+        return new ResponseEntity<>(PatientMapper.INSTANCE.toDtoPage(usersPage), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<PatientDtoResponse> patient(@PathVariable String id) {
+        UserEntity user = userService.getPatient(id);
+        return new ResponseEntity<>(PatientMapper.INSTANCE.toDto(user), HttpStatus.OK);
+    }
+
     @PostMapping(path = "/create")
     public ResponseEntity<?> createUser(@RequestBody RegisterRequest userRequest) {
         UserEntity user = userService.createUser(userRequest);
@@ -66,13 +92,13 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/delete/{id}")
+    @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<String> deleteAccount(@PathVariable String id) {
         userService.deleteAccount(id);
         return new ResponseEntity<>("Your account was deleted successfully",HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/activate/{id}")
+    @DeleteMapping(path = "/activate/{id}")
     public ResponseEntity<String> activateAccount(@PathVariable String id) {
         userService.activateAccount(id);
         return new ResponseEntity<>("Your account was activated successfully",HttpStatus.OK);

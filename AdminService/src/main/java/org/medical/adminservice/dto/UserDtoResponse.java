@@ -1,12 +1,15 @@
-package org.medical.userservice.dto.response;
+package org.medical.adminservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorDtoResponse {
+public class UserDtoResponse {
 
     private String id;
 
@@ -18,4 +21,3 @@ public class DoctorDtoResponse {
 
     private DoctorProfileDtoResponse doctorProfile ;
 }
-

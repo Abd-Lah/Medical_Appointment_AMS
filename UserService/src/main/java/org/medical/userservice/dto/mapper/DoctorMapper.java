@@ -16,7 +16,7 @@ public interface DoctorMapper extends UserMapper {
     DoctorMapper INSTANCE = Mappers.getMapper(DoctorMapper.class);
 
     @Override
-    @Mapping(target = "doctorProfileDto", source = "doctorProfile") // Map the doctorProfile from UserEntity to DoctorDtoResponse
+    @Mapping(target = "doctorProfile", source = "doctorProfile") // Map the doctorProfile from UserEntity to DoctorDtoResponse
     DoctorDtoResponse toDto(UserEntity userEntity);
 
     @Override
