@@ -56,7 +56,7 @@ public class AdminController {
         return adminService.deleteUser(id);
     }
 
-    @DeleteMapping(path = "/users/activate/{id}")
+    @PutMapping(path = "/users/activate/{id}")
     public ResponseEntity<String> validateUser(@PathVariable String id) {
         return adminService.validateDoctor(id);
     }

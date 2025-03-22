@@ -37,7 +37,7 @@ public class DoctorController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(path = "/profile/activate/{id}")
+    @PutMapping(path = "/profile/activate/{id}")
     public ResponseEntity<Void> activateDoctorProfile(@PathVariable String id) {
         doctorService.activateProfile(id);
         return ResponseEntity.noContent().build();

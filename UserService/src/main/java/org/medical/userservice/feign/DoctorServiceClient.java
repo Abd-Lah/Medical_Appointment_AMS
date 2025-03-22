@@ -19,6 +19,6 @@ public interface DoctorServiceClient {
     @DeleteMapping(path = "/api/doctors/profile/delete/{id}")
     void deleteDoctorProfile(@PathVariable("id") String id);
 
-    @DeleteMapping(path = "/api/doctors/profile/activate/{id}")
+    @PutMapping(path = "/api/doctors/profile/activate/{id}")
     void activateDoctorProfile(@PathVariable("id") String id);
 }
