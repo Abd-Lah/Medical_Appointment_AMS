@@ -6,8 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PatientResponseDto {
-    private int id;
+    private String id;
     private String firstName;
+    private String email;
     private String lastName;
     private String city;
 }

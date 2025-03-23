@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.medical.appointmentservice.dto.response.DoctorProfileResponseDto;
 import org.medical.appointmentservice.exception.ForbiddenException;
 import org.medical.appointmentservice.exception.InvalidRequestException;
 import org.medical.appointmentservice.exception.ValidationException;
@@ -31,6 +32,8 @@ public class AppointmentRequest {
     public static final Integer APPOINTMENT_BEFORE_DAYS = 7;
 
     @NotBlank(message = "Doctor field is required")
+    private String patientId;
+    @NotBlank(message = "Doctor field is required")
     private String doctorId;
 
     @NotBlank(message = "Appointment date is required")
@@ -43,7 +46,7 @@ public class AppointmentRequest {
         4/ Validates that the selected day is part of the doctor's working days.
         5/ Ensures the selected time falls within the doctor's available working hours and is not during a break.
     */
-    public void validate(DoctorProfileRequest doctorProfileDTO , Boolean alreadyTaken, Boolean hasPendingAppointment, Boolean canceled) throws ValidationException {
+    public void validate(DoctorProfileResponseDto doctorProfileDTO , Boolean alreadyTaken, Boolean hasPendingAppointment, Boolean canceled) throws ValidationException {
 
         LocalDateTime now = LocalDateTime.now().plusMinutes(APPOINTMENT_AFTER_MINUTES);
 
@@ -84,7 +87,7 @@ public class AppointmentRequest {
         }
     }
 
-    public void validateInUpdate(AppointmentEntity existingAppointment, DoctorProfileRequest doctorProfileDto, Boolean alreadyTaken, Boolean hasPendingAppointment) {
+    public void validateInUpdate(AppointmentEntity existingAppointment, DoctorProfileResponseDto doctorProfileDto, Boolean alreadyTaken, Boolean hasPendingAppointment) {
 
         // check if updated before
         if(!existingAppointment.getCreatedAt().isEqual(existingAppointment.getUpdatedAt())) {

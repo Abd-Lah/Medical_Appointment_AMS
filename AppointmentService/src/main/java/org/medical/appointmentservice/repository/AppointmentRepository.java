@@ -1,7 +1,6 @@
 package org.medical.appointmentservice.repository;
 
 import jakarta.persistence.criteria.Predicate;
-import org.medical.appointmentservice.dto.response.PatientResponseDto;
 import org.medical.appointmentservice.model.AppointmentEntity;
 import org.medical.appointmentservice.model.AppointmentStatus;
 import org.springframework.data.domain.Page;

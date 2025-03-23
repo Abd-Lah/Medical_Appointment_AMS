@@ -15,4 +15,14 @@ public class DoctorProfileResponseDto {
 
     private Integer appointmentDuration ;
 
+    private String workingDays ;
+
+    private String startTime ;
+
+    private String breakTimeStart ;
+
+    private String breakTimeEnd ;
+
+    private String endTime ;
+
 }
