@@ -12,6 +12,7 @@ import org.medical.patientservice.feign.UserFeignClient;
 import org.medical.patientservice.service.PatientService;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +73,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public ResponseEntity<String> cancelAppointment(String appointmentId, String patientId) throws ValidationException {
+
         return afc.cancelAppointment(appointmentId, patientId);
     }
 
@@ -79,4 +81,5 @@ public class PatientServiceImpl implements PatientService {
     public ResponseEntity<Resource> appointmentBill(String appointmentId, String patientId) {
         return afc.appointmentBill(appointmentId, patientId);
     }
+
 }

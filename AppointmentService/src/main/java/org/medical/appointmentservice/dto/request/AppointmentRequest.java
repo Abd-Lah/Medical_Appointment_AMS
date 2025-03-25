@@ -117,20 +117,27 @@ public class AppointmentRequest {
         return workingDayList.contains(dayOfWeek.toString().toLowerCase());
     }
 
-    private List<String> generateAvailableTimes(LocalTime startTime, LocalTime endTime, LocalTime breakStartTime, LocalTime breakEndTime, int appointmentDuration) {
+    private List<String> generateAvailableTimes(LocalTime startTime,
+                                                LocalTime endTime,
+                                                LocalTime breakStartTime,
+                                                LocalTime breakEndTime,
+                                                int appointmentDuration) {
         List<String> availableTimes = new ArrayList<>();
         LocalTime currentTime = startTime;
 
-        while (!currentTime.isAfter(endTime.minusMinutes(appointmentDuration))) { // Ensure there's enough time for appointment duration
-            if (currentTime.isBefore(breakStartTime) || currentTime.isAfter(breakEndTime)) {
-                availableTimes.add(currentTime.toString());
-            }
-            currentTime = currentTime.plusMinutes(appointmentDuration); // Increment by appointment duration
+        while (!currentTime.isAfter(breakStartTime.minusMinutes(appointmentDuration))) {
+            availableTimes.add(currentTime.toString());
+            currentTime = currentTime.plusMinutes(appointmentDuration);
         }
 
+        currentTime = breakEndTime;
+
+        while (!currentTime.isAfter(endTime.minusMinutes(appointmentDuration))) {
+            availableTimes.add(currentTime.toString());
+            currentTime = currentTime.plusMinutes(appointmentDuration);
+        }
         return availableTimes;
     }
-
 
 }
 
