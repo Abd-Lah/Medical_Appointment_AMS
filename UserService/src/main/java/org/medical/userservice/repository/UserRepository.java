@@ -61,6 +61,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSp
         }, pageable);
     }
 
-    @Query("SELECT u FROM UserEntity u WHERE u.role = 'patient' AND u.id = :id")
+    @Query("SELECT u FROM UserEntity u WHERE u.role = 'PATIENT' AND u.id = :id")
     UserEntity getPatient(@Param("id") String id);
 }

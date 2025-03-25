@@ -1,12 +1,11 @@
 package org.medical.appointmentservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments")
@@ -15,13 +14,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AppointmentEntity extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private String patient;
+    @Column(name = "patient_id", nullable = false)
+    private String patientId;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private UserEntity doctor;
+    @Column(name = "doctor_id", nullable = false)
+    private String doctorId;
 
     @Column(nullable = false, name = "appointment_date")
     private LocalDateTime appointmentDate;
@@ -33,9 +30,9 @@ public class AppointmentEntity extends BaseEntity {
     private ReportEntity report;
 
 
-    public AppointmentEntity(UserEntity loggedPatient, UserEntity doctor, LocalDateTime appointmentDate, AppointmentStatus appointmentStatus, ReportEntity report) {
-        this.patient = loggedPatient;
-        this.doctor = doctor;
+    public AppointmentEntity(String patientId, String doctorId, LocalDateTime appointmentDate, AppointmentStatus appointmentStatus, ReportEntity report) {
+        this.patientId = patientId;
+        this.doctorId = doctorId;
         this.appointmentDate = appointmentDate;
         this.Status = appointmentStatus;
         this.report = report;

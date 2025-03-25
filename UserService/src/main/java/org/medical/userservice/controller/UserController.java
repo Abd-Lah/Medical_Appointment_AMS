@@ -98,7 +98,7 @@ public class UserController {
         return new ResponseEntity<>("Your account was deleted successfully",HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/activate/{id}")
+    @PutMapping(path = "/activate/{id}")
     public ResponseEntity<String> activateAccount(@PathVariable String id) {
         userService.activateAccount(id);
         return new ResponseEntity<>("Your account was activated successfully",HttpStatus.OK);

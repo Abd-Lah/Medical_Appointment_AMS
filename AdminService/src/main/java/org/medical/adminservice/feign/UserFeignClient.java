@@ -39,7 +39,7 @@ public interface UserFeignClient {
     @RequestMapping(method = RequestMethod.DELETE, path = "/api/user/delete/{id}")
     ResponseEntity<String> deleteAccount(@PathVariable String id);
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/api/user/activate/{id}")
+    @RequestMapping(method = RequestMethod.PUT, path = "/api/user/activate/{id}")
     ResponseEntity<String> activateAccount(@PathVariable String id);
 
 }

@@ -1,22 +1,18 @@
 spring:
   application:
-    name: AppointmentService
-  config:
-    import:
-      optional:
-        configserver:
+    name: Appointment-Service
+
   cloud:
     config:
       enabled: false
     discovery:
-      enabled: false
-  eureka:
-    client:
-      enabled: false
+      enabled: true
+
   datasource:
     username: postgres
     url: jdbc:postgresql://localhost:5432/appointment_db
     password: password
+
   jpa:
     properties:
       hibernate:
@@ -24,7 +20,34 @@ spring:
     hibernate:
       ddl-auto: update
 
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 465
+    username: bcb8bb50e0713d
+    password: b8389533f4af90
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+eureka:
+  client:
+    enabled: true
+
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+
 server:
-  port: 8081
+  port: 8085
 
 

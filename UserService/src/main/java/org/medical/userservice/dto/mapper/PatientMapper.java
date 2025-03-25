@@ -1,6 +1,7 @@
 package org.medical.userservice.dto.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.medical.userservice.dto.response.PatientDtoResponse;
 import org.medical.userservice.model.UserEntity;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public interface PatientMapper extends UserMapper{
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 
+    @Mapping(source = "phoneNumber", target = "phone")
     PatientDtoResponse toDto(UserEntity userEntity);
     UserEntity toUserEntity(PatientDtoResponse userDto);
     default Page<PatientDtoResponse> toDtoPage(Page<UserEntity> userEntitiesPage) {
