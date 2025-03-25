@@ -60,19 +60,19 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional
-    public ResponseEntity<AppointmentResponseDto> createAppointment(AppointmentRequest appointmentRequest) throws ValidationException {
+    public ResponseEntity<AppointmentResponseDto> createAppointment(AppointmentRequest appointmentRequest) throws RuntimeException {
         return afc.createAppointment(appointmentRequest);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<AppointmentResponseDto> updateAppointment(String appointmentId, AppointmentRequest appointmentRequest) throws ValidationException {
+    public ResponseEntity<AppointmentResponseDto> updateAppointment(String appointmentId, AppointmentRequest appointmentRequest) throws RuntimeException {
         return afc.updateAppointment(appointmentId, appointmentRequest);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<String> cancelAppointment(String appointmentId, String patientId) throws ValidationException {
+    public ResponseEntity<String> cancelAppointment(String appointmentId, String patientId) throws RuntimeException {
 
         return afc.cancelAppointment(appointmentId, patientId);
     }

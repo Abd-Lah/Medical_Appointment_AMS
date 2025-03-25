@@ -12,7 +12,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        if (response.status() == 422) {
+        if (response.status() == 422 || response.status() == 400 || response.status() == 401 || response.status() == 403) {
             try {
                 // Extract the error response body as a string
                 String responseBody = new String(response.body().asInputStream().readAllBytes());
@@ -27,6 +27,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
                 return defaultErrorDecoder.decode(methodKey, response);
             }
         }
+
         return defaultErrorDecoder.decode(methodKey, response);
     }
 }
