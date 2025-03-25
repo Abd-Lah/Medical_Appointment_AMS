@@ -18,8 +18,8 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity, String>, JpaSpecificationExecutor<AppointmentEntity> {
 
-    @Query("SELECT a FROM AppointmentEntity a WHERE a.id = :appointmentId AND (a.doctorId = :userEntity OR a.patientId = :userEntity)")
-    AppointmentEntity findByAppointmentIdAndByUserId(String appointmentId, String userEntity);
+    @Query("SELECT a FROM AppointmentEntity a WHERE a.id = :appointmentId AND (a.doctorId = :userId OR a.patientId = :userId)")
+    AppointmentEntity findByAppointmentIdAndByUserId(String appointmentId, String userId);
 
     default Page<AppointmentEntity> getAppointments(String id, String orderBy, Pageable pageable) {
         return findAll((root, query, builder) -> {

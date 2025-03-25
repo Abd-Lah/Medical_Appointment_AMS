@@ -12,7 +12,7 @@ public class AppointmentDoctorResponseDto {
 
     private String id;
 
-    private PatientResponseDto doctor;
+    private PatientResponseDto patient;
 
     private LocalDateTime appointmentDate;
 

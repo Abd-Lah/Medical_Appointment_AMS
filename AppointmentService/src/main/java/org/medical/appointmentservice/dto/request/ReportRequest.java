@@ -10,6 +10,8 @@ import lombok.Setter;
 public class ReportRequest {
 
     @NotBlank
+    private String doctorId;
+    @NotBlank
     @Size(min = 10)
     private String diagnosis;
 

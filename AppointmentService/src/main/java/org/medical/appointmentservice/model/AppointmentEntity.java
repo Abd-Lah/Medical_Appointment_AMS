@@ -31,8 +31,8 @@ public class AppointmentEntity extends BaseEntity {
 
 
     public AppointmentEntity(String patientId, String doctorId, LocalDateTime appointmentDate, AppointmentStatus appointmentStatus, ReportEntity report) {
-        this.patient = patientId;
-        this.doctor = doctorId;
+        this.patientId = patientId;
+        this.doctorId = doctorId;
         this.appointmentDate = appointmentDate;
         this.Status = appointmentStatus;
         this.report = report;

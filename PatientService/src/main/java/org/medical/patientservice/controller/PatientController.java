@@ -1,10 +1,13 @@
 package org.medical.patientservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.medical.patientservice.dto.request.AppointmentRequest;
 import org.medical.patientservice.dto.request.UserRequest;
+import org.medical.patientservice.dto.response.AppointmentResponseDto;
 import org.medical.patientservice.dto.response.DoctorResponseDto;
 import org.medical.patientservice.dto.response.UserResponseDto;
 import org.medical.patientservice.service.PatientService;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,5 +48,32 @@ public class PatientController {
     @PutMapping("/activate/{id}")
     public ResponseEntity<String> activate(@PathVariable("id") String id) {
         return patientService.activateUser(id);
+    }
+
+    @GetMapping("/{patientId}/appointments")
+    public ResponseEntity<Page<AppointmentResponseDto>> getAppointments( @PathVariable("patientId") String patientId,
+                                                                         @RequestParam(required = false, defaultValue = "0") int page,
+                                                                         @RequestParam(required = false, defaultValue = "10") int size,
+                                                                         @RequestParam(required = false, defaultValue = "asc") String orderBy){
+        return patientService.getPatientAppointments(patientId, page, size, orderBy);
+    }
+
+    @GetMapping("/{patientId}/appointment/{appointmentId}")
+    public ResponseEntity<AppointmentResponseDto> getAppointment(@PathVariable("patientId") String patientId, @PathVariable("appointmentId") String appointmentId) {
+        return patientService.getPatientAppointment(patientId, appointmentId);
+    }
+
+    @PostMapping(path = "/appointment/create")
+    public ResponseEntity<AppointmentResponseDto> createAppointment(@RequestBody AppointmentRequest appointmentRequest){
+        return patientService.createAppointment(appointmentRequest);
+    }
+
+    @DeleteMapping("/{patientId}/appointment/{appointmentId}")
+    public ResponseEntity<String> cancelAppointment(@PathVariable("appointmentId") String appointmentId, @PathVariable("patientId") String patientId){
+        return patientService.cancelAppointment(appointmentId, patientId);
+    }
+    @GetMapping("/{patientId}/appointment/{appointmentId}/billing_file")
+    public ResponseEntity<Resource> appointmentBill(@PathVariable("appointmentId") String appointmentId, @PathVariable("patientId") String patientId){
+        return patientService.appointmentBill(appointmentId, patientId);
     }
 }
