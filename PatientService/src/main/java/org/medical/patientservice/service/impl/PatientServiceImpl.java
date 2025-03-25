@@ -6,6 +6,7 @@ import org.medical.patientservice.dto.request.UserRequest;
 import org.medical.patientservice.dto.response.AppointmentResponseDto;
 import org.medical.patientservice.dto.response.DoctorResponseDto;
 import org.medical.patientservice.dto.response.UserResponseDto;
+import org.medical.patientservice.exception.ValidationException;
 import org.medical.patientservice.feign.AppointmentFeignClient;
 import org.medical.patientservice.feign.UserFeignClient;
 import org.medical.patientservice.service.PatientService;
@@ -13,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,17 +58,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public ResponseEntity<AppointmentResponseDto> createAppointment(AppointmentRequest appointmentRequest) {
+    @Transactional
+    public ResponseEntity<AppointmentResponseDto> createAppointment(AppointmentRequest appointmentRequest) throws ValidationException {
         return afc.createAppointment(appointmentRequest);
     }
 
     @Override
-    public ResponseEntity<AppointmentResponseDto> updateAppointment(String appointmentId, AppointmentRequest appointmentRequest) {
+    @Transactional
+    public ResponseEntity<AppointmentResponseDto> updateAppointment(String appointmentId, AppointmentRequest appointmentRequest) throws ValidationException {
         return afc.updateAppointment(appointmentId, appointmentRequest);
     }
 
     @Override
-    public ResponseEntity<String> cancelAppointment(String appointmentId, String patientId) {
+    @Transactional
+    public ResponseEntity<String> cancelAppointment(String appointmentId, String patientId) throws ValidationException {
         return afc.cancelAppointment(appointmentId, patientId);
     }
 

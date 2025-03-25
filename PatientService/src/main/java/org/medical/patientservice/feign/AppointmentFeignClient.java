@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "Appointment-Service", path = "/api/appointments")
+@FeignClient(name = "appointment-service", path = "/api/appointments")
 public interface AppointmentFeignClient {
     @GetMapping("/patient/{patientId}")
     ResponseEntity<Page<AppointmentResponseDto>> getPatientAppointments(
