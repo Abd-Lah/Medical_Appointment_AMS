@@ -79,6 +79,7 @@ public class DoctorServiceImp implements DoctorService {
 
     @Override
     public ResponseEntity<AppointmentResponseDto> changeStatus(String appointmentId, String doctorId, AppointmentStatusRequest appointmentStatusRequest) {
+        appointmentStatusRequest.validate();
         return afc.changeStatus(appointmentId, doctorId, appointmentStatusRequest);
     }
 

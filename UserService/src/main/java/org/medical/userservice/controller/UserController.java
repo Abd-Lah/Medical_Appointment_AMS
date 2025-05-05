@@ -3,11 +3,15 @@ package org.medical.userservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.medical.userservice.dto.mapper.DoctorMapper;
 import org.medical.userservice.dto.mapper.PatientMapper;
+import org.medical.userservice.dto.request.AuthRequest;
 import org.medical.userservice.dto.request.RegisterRequest;
 import org.medical.userservice.dto.request.UserRequest;
+import org.medical.userservice.dto.response.AuthResponse;
 import org.medical.userservice.dto.response.DoctorDtoResponse;
 import org.medical.userservice.dto.response.PatientDtoResponse;
+import org.medical.userservice.model.RoleEnum;
 import org.medical.userservice.model.UserEntity;
+import org.medical.userservice.service.JwtService;
 import org.medical.userservice.service.UserService;
 import org.medical.userservice.service.factory.UserRoleMapperFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping(path = "/api/user")
@@ -24,7 +32,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final UserRoleMapperFactory userRoleMapperFactory;
-
+    private final AuthenticationManager authManager;
+    private final JwtService jwtService;
 
     @GetMapping("/doctors")
     public ResponseEntity<Page<DoctorDtoResponse>> doctor(
@@ -78,9 +87,31 @@ public class UserController {
     @PostMapping(path = "/create")
     public ResponseEntity<?> createUser(@RequestBody RegisterRequest userRequest) {
         UserEntity user = userService.createUser(userRequest);
+
+        String token = jwtService.generateToken(user);
+
         Object dto = userRoleMapperFactory.getMapper(user.getRole(), user);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+
+        AuthResponse authResponse = new AuthResponse(dto, token);
+        return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
+
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest loginRequest) {
+        Authentication auth = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+        UserEntity user = userService.getUser(loginRequest.getEmail());
+
+        String token = jwtService.generateToken(user);
+
+        Object dto = userRoleMapperFactory.getMapper(user.getRole(), user);
+
+        AuthResponse authResponse = new AuthResponse(dto, token);
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {

@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+    #    gateway:
+    #      routes:
+    #        - id: r1
+    #          uri: lb://USERSERVICE
+    #          predicates:
+    #            - Path=/api/user/** ,/api/doctor/** ,/api/admin/**

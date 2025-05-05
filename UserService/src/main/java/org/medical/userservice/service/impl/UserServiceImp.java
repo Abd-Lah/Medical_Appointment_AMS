@@ -14,12 +14,14 @@ import org.medical.userservice.util.Helper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +92,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public UserEntity getUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
     public void activateAccount(String id) {
         UserEntity user = getUserById(id);
         helper.isObjectNull(user, "User not found");
@@ -120,38 +127,35 @@ public class UserServiceImp implements UserService {
     }
 
     private Page<UserEntity> filterUsers(String firstName, String lastName, String city, String specialization, RoleEnum role, Pageable pageable) {
-        // Get the initial page of users based on the provided filters
         Page<UserEntity> users = getUsers(firstName, lastName, city, role, pageable);
 
-        // Only filter if the role is DOCTOR and specialization is provided
-        if (role == RoleEnum.DOCTOR) {
-            List<UserEntity> filteredDoctors = new ArrayList<>();
-
-            // Loop through the users and filter based on the specialization (if it's not null)
-            for (UserEntity doctor : users.getContent()) {
-                DoctorProfileDtoResponse doctorProfile = doctorServiceClient.getDoctorProfile(doctor.getId());
-
-                if (doctorProfile != null) {
-                    // If specialization is provided, filter based on it
-                    if (specialization != null && !specialization.isEmpty()) {
-                        if (doctorProfile.getSpecialty() != null && doctorProfile.getSpecialty().toLowerCase().contains(specialization.toLowerCase())) {
-                            doctor.setDoctorProfile(doctorProfile);
-                            filteredDoctors.add(doctor);
-                        }
-                    } else {
-                        // If specialization is null, add doctor to the list regardless of specialization
-                        doctor.setDoctorProfile(doctorProfile);
-                        filteredDoctors.add(doctor);
-                    }
-                }
-            }
-
-            // Return the filtered list as a Page
-            return new PageImpl<>(filteredDoctors, pageable, filteredDoctors.size());
+        if (role != RoleEnum.DOCTOR) {
+            return users;
         }
 
-        // Return all users if the role is not DOCTOR or if no filtering is needed
-        return users;
+        List<UserEntity> filteredDoctors = users.getContent().stream()
+                .map(doctor -> attachDoctorProfile(doctor))
+                .filter(Objects::nonNull)
+                .filter(doctor -> matchesSpecialization(doctor.getDoctorProfile(), specialization))
+                .toList();
+
+        return new PageImpl<>(filteredDoctors, pageable, filteredDoctors.size());
     }
+
+    private UserEntity attachDoctorProfile(UserEntity doctor) {
+        DoctorProfileDtoResponse profile = doctorServiceClient.getDoctorProfile(doctor.getId());
+        if (profile != null) {
+            doctor.setDoctorProfile(profile);
+            return doctor;
+        }
+        return null;
+    }
+
+    private boolean matchesSpecialization(DoctorProfileDtoResponse profile, String specialization) {
+        if (specialization == null || specialization.isBlank()) return true;
+        return profile.getSpecialty() != null &&
+                profile.getSpecialty().toLowerCase().contains(specialization.toLowerCase());
+    }
+
 
 }

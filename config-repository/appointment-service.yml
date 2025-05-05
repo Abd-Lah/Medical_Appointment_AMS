@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/appointment_db
+    password: password
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 465
+    username: bcb8bb50e0713d
+    password: b8389533f4af90
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

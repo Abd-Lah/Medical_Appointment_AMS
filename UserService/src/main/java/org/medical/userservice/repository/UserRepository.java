@@ -13,10 +13,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
-    UserEntity findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
     default Page<UserEntity> getUsersBySpec(String firstName, String lastName, String city ,RoleEnum role, Pageable pageable) {
         return findAll((root, query, builder) -> {

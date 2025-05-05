@@ -21,5 +21,7 @@ public interface UserService {
 
     UserEntity getPatient(String id);
 
+    UserEntity getUser(String email);
+
     void activateAccount(String id);
 }
