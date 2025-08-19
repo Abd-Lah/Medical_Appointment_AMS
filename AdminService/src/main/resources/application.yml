@@ -5,6 +5,3 @@ spring:
     import: optional:configserver:http://localhost:9999
     activate:
       on-profile: default
-
-server:
-  port: 8083

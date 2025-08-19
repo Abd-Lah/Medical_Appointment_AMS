@@ -25,15 +25,15 @@ public class UserServiceApplication {
 	public CommandLineRunner commandLineRunner(UserRepository userRepository) {
 		return args -> {
 			PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			userRepository.save(new UserEntity(
-					"admin@admin.com",
-					passwordEncoder.encode("admin"),  // Encode the password
-					"admin",
-					"admin",
-					"089765765",
-					"casa",
-					RoleEnum.ADMIN)
-			);
+//			userRepository.save(new UserEntity(
+//					"admin@admin.com",
+//					passwordEncoder.encode("admin"),  // Encode the password
+//					"admin",
+//					"admin",
+//					"089765765",
+//					"casa",
+//					RoleEnum.ADMIN)
+//			);
 		};
 	}
 }

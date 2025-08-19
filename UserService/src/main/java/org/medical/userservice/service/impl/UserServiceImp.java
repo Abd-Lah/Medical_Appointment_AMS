@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.medical.userservice.dto.request.DoctorProfileRequest;
 import org.medical.userservice.dto.request.RegisterRequest;
 import org.medical.userservice.dto.request.UserRequest;
+import org.medical.userservice.service.SimpleJwtService;
 import org.medical.userservice.dto.response.DoctorProfileDtoResponse;
 import org.medical.userservice.feign.DoctorServiceClient;
 import org.medical.userservice.model.RoleEnum;
@@ -18,6 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
+import org.medical.userservice.feign.GatewayClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,13 @@ public class UserServiceImp implements UserService {
     private final DoctorServiceClient doctorServiceClient;
     private final Helper<UserEntity> helper;
     private final PasswordEncoder passwordEncoder;
+    private final SimpleJwtService jwtService;
+    private final JwtDecoder jwtDecoder;
+    private final GatewayClient gatewayClient;
+
+    // In-memory token blacklists (replace with Redis in production)
+    private final List<String> blacklistedAccessTokens = new ArrayList<>();
+    private final List<String> blacklistedRefreshTokens = new ArrayList<>();
 
 
     @Override
@@ -105,6 +117,40 @@ public class UserServiceImp implements UserService {
         }
         user.setDeleted(false);
         userRepository.save(user);
+    }
+
+    @Override
+    public String refreshAccessToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new IllegalArgumentException("Refresh token is required");
+        }
+        if (blacklistedRefreshTokens.contains(refreshToken)) {
+            throw new IllegalStateException("Refresh token is revoked");
+        }
+        try {
+            Jwt jwt = jwtDecoder.decode(refreshToken);
+            if (!"refresh".equals(jwt.getClaimAsString("type"))) {
+                throw new IllegalArgumentException("Invalid refresh token");
+            }
+            String email = jwt.getSubject();
+            UserEntity user = getUser(email);
+            // Optionally rotate refresh tokens here
+            return jwtService.generateToken(user);
+        } catch (JwtException e) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+    }
+
+    @Override
+    public void logout(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return;
+        }
+        String accessToken = authorizationHeader.substring("Bearer ".length());
+        blacklistedAccessTokens.add(accessToken);
+        try {
+            gatewayClient.logout("Bearer " + accessToken);
+        } catch (Exception ignored) { }
     }
 
 

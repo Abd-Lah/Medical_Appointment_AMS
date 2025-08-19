@@ -6,10 +6,28 @@ spring:
     import: optional:configserver:http://localhost:9999
     activate:
       on-profile: default
-  main:
-    allow-bean-definition-overriding: true
+
+# Fallback configuration in case config server is not available
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
 server:
   port: 8888
 
-jwt:
-  secret: MySuperSecretKey1234567890
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info"]
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG

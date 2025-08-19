@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: doctor-service
   datasource:
     username: postgres
     url: jdbc:postgresql://localhost:5432/doctor_profile_db
@@ -10,3 +12,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: MySuperSecretKey1234567890
+
+server:
+  port: 8082

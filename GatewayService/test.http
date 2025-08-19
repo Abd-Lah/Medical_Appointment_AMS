@@ -1,0 +1,7 @@
+POST http://localhost:8888/user-service/api/user/login
+Content-Type: application/json
+
+{
+  "email": "gateway-test@example.com",
+  "password": "password123"
+}

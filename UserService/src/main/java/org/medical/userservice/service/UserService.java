@@ -24,4 +24,8 @@ public interface UserService {
     UserEntity getUser(String email);
 
     void activateAccount(String id);
+
+    String refreshAccessToken(String refreshToken);
+
+    void logout(String authorizationHeader);
 }

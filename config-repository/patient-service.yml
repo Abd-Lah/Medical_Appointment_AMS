@@ -1,3 +1,11 @@
 spring:
+  application:
+    name: patient-service
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+jwt:
+  secret: MySuperSecretKey1234567890
+
+server:
+  port: 8084

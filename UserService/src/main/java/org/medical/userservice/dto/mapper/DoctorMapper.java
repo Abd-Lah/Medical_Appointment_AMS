@@ -11,9 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper  (uses = DoctorProfileMapper.class)// Ensure DoctorProfileMapper is used for nested mapping
+@Mapper(componentModel = "spring", uses = DoctorProfileMapper.class)// Ensure DoctorProfileMapper is used for nested mapping
 public interface DoctorMapper extends UserMapper {
-    DoctorMapper INSTANCE = Mappers.getMapper(DoctorMapper.class);
 
     @Override
     @Mapping(target = "doctorProfile", source = "doctorProfile") // Map the doctorProfile from UserEntity to DoctorDtoResponse
